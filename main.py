@@ -1,5 +1,6 @@
 from typing import List
-from fastapi import FastAPI, Depends, HTTPException
+from datetime import timedelta
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from flask_sqlalchemy import SQLAlchemy
 
@@ -39,6 +40,26 @@ def create_user(user: schema.UserCreate, db: Session = Depends(get_db)):
     return controllers.users.create_user(db=db, user=user)
 
 
+@app.post("/users/login", response_model=schema.Token)
+def login(login_form: schema.UserLogin, db: Session = Depends(get_db)):
+    user = controllers.users.authenticate_user(
+        db=db, email=login_form.email, password=login_form.password
+    )
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token_expires = timedelta(minutes=controllers.users.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = controllers.users.create_access_token(
+        data={"sub": user.id}, expires_delta=access_token_expires
+    )
+
+    return {"access_token": access_token, "token_type": "bearer"}
+
+
 @app.post("/users/{user_id}/posts")
 def create_post(user_id: int, post: schema.PostCreate, db: Session = Depends(get_db)):
     post = controllers.posts.create_post(db=db, post=post, user_id=user_id)
@@ -68,7 +89,9 @@ def update_post(post_id: int, data: schema.PostUpdate, db: Session = Depends(get
 
 
 @app.post("/users/{user_id}/reset-password")
-def reset_user_password(user_id: int, passwords: schema.UserPasswordReset, db: Session = Depends(get_db)):
+def reset_user_password(
+    user_id: int, passwords: schema.UserPasswordReset, db: Session = Depends(get_db)
+):
     return controllers.users.update_user_password(
         db=db,
         user_id=user_id,
