@@ -71,7 +71,8 @@ def hash_password(password: str):
 
 
 def get_user(db: Session, user_id: int):
-    return db.query(models.user.User).filter(models.user.User.id == user_id).first()
+    return db.query(
+        models.user.User).filter(models.user.User.id == user_id).first()
 
 
 def get_users(db: Session, offset: int = 0, limit: int = 50):
@@ -79,7 +80,8 @@ def get_users(db: Session, offset: int = 0, limit: int = 50):
 
 
 def get_user_by_email(db: Session, email: str):
-    return db.query(models.user.User).filter(models.user.User.email == email).first()
+    return db.query(
+        models.user.User).filter(models.user.User.email == email).first()
 
 
 def create_user(db: Session, user: schema.UserCreate):
@@ -99,27 +101,33 @@ def create_user(db: Session, user: schema.UserCreate):
 
 
 def authenticate_user(db: Session, email: str, password: str):
-    user = db.query(models.user.User).filter(models.user.User.email == email).first()
+    user = db.query(
+        models.user.User).filter(models.user.User.email == email).first()
 
     try:
-        if checkpw(str(password).encode("utf-8"), str(user.password).encode("utf-8")):
+        if checkpw(
+                str(password).encode("utf-8"),
+                str(user.password).encode("utf-8")):
             return user
     except:
         raise HTTPException(
             status_code=400,
-            detail="An error ocurred while attempting to login with provided credentials.",
+            detail=
+            "An error ocurred while attempting to login with provided credentials.",
         )
 
 
-def update_user_password(
-    db: Session, user_id: int, old_password: str, new_password: str
-):
-    user = db.query(models.user.User).filter(models.user.User.id == user_id).first()
+def update_user_password(db: Session, user_id: int, old_password: str,
+                         new_password: str):
+    user = db.query(
+        models.user.User).filter(models.user.User.id == user_id).first()
 
     if user is None:
         return None
 
-    if checkpw(str(old_password).encode("utf-8"), str(user.password).encode("utf-8")):
+    if checkpw(
+            str(old_password).encode("utf-8"),
+            str(user.password).encode("utf-8")):
         setattr(user, "password", hash_password(new_password))
 
         db.add(user)
