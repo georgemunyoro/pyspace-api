@@ -1,7 +1,10 @@
 from datetime import timedelta
 from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi import Depends
+from fastapi import FastAPI
+from fastapi import HTTPException
+from fastapi import status
 from fastapi.encoders import jsonable_encoder
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import Session
@@ -9,7 +12,9 @@ from sqlalchemy.orm import Session
 import controllers
 import models
 import schema
-from database import Base, SessonLocal, engine
+from database import Base
+from database import engine
+from database import SessonLocal
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
