@@ -4,14 +4,15 @@ import os
 from datetime import datetime, timedelta
 from typing import Optional
 
-import models
-import schema
 from bcrypt import checkpw, gensalt, hashpw
 from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from sqlalchemy.orm import Session
+
+import models
+import schema
 
 load_dotenv()
 

@@ -1,14 +1,15 @@
-from typing import List
 from datetime import timedelta
-from fastapi import FastAPI, Depends, HTTPException, status
+from typing import List
+
+from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from flask_sqlalchemy import SQLAlchemy
-
 from sqlalchemy.orm import Session
-from database import SessonLocal, engine, Base
+
+import controllers
 import models
 import schema
-import controllers
+from database import Base, SessonLocal, engine
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
