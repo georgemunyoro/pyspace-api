@@ -6,7 +6,9 @@ from flask_sqlalchemy import SQLAlchemy
 
 from sqlalchemy.orm import Session
 from database import SessonLocal, engine, Base
-import models, schema, controllers
+import models
+import schema
+import controllers
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -52,7 +54,8 @@ def login(login_form: schema.UserLogin, db: Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    access_token_expires = timedelta(minutes=controllers.users.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token_expires = timedelta(
+        minutes=controllers.users.ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = controllers.users.create_access_token(
         data={"sub": user.id}, expires_delta=access_token_expires
     )
