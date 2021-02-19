@@ -55,7 +55,8 @@ def login(login_form: schema.UserLogin, db: Session = Depends(get_db)):
         )
 
     access_token_expires = timedelta(
-        minutes=controllers.users.ACCESS_TOKEN_EXPIRE_MINUTES)
+        minutes=controllers.users.ACCESS_TOKEN_EXPIRE_MINUTES
+    )
     access_token = controllers.users.create_access_token(
         data={"sub": user.id}, expires_delta=access_token_expires
     )

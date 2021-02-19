@@ -91,8 +91,7 @@ def create_user(db: Session, user: schema.UserCreate):
 
 
 def authenticate_user(db: Session, email: str, password: str):
-    user = db.query(models.user.User).filter(
-        models.user.User.email == email).first()
+    user = db.query(models.user.User).filter(models.user.User.email == email).first()
 
     try:
         if checkpw(str(password).encode("utf-8"), str(user.password).encode("utf-8")):
@@ -107,8 +106,7 @@ def authenticate_user(db: Session, email: str, password: str):
 def update_user_password(
     db: Session, user_id: int, old_password: str, new_password: str
 ):
-    user = db.query(models.user.User).filter(
-        models.user.User.id == user_id).first()
+    user = db.query(models.user.User).filter(models.user.User.id == user_id).first()
 
     if user is None:
         return None
